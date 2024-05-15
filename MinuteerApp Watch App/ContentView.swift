@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @State var timerMinutes: Timer?
     @State var timerSeconds: Timer?
-    @State var timerMinutesValue: TimeInterval = 30
+    @State var timerMinutesValue: TimeInterval = 1
     @State var timerSecondsValue: TimeInterval = 60
     @State var timerStarted: Bool = false
     @State var timerPaused: Bool = false
@@ -63,25 +63,18 @@ struct ContentView: View {
         .offset(x: 60, y: 0)
     
     }
-    
-    func resetTimer(){
-        timerStarted = false
-        timerMinutes?.invalidate()
-        timerSeconds?.invalidate()
-        timerMinutesValue = 1
-        timerSecondsValue = 60
-    }
-    
+        
     func TimerTapped(){
-        timerPaused.toggle()
         if timerStarted == false {
             timerPaused = false
             timerStarted = true
             timerMinutesValue -= 1
             startTimerSeconds()
+        } else {
+            timerPaused.toggle()
         }
     }
-    
+        
     func UpdateTimerMinutes() {
         if timerMinutesValue == 0 {
             timerMinutes?.invalidate()
@@ -93,19 +86,30 @@ struct ContentView: View {
             startTimerSeconds()
         }
     }
-    
+        
     func startTimerSeconds() {
         timerSeconds = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-            if timerSecondsValue > 0 && !timerPaused {
+            if timerSecondsValue > 0 {
+                if !timerPaused {
                     timerSecondsValue -= 1
+                }
             } else {
                 timerSeconds?.invalidate()
                 timerSecondsValue = 60
                 UpdateTimerMinutes()
             }
         }
-
     }
+    
+    func resetTimer(){
+        timerStarted = false
+        timerPaused = true
+        timerMinutes?.invalidate()
+        timerSeconds?.invalidate()
+        timerMinutesValue = 1
+        timerSecondsValue = 60
+    }
+    
 }
 
 #Preview {
